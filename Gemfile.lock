@@ -2,10 +2,14 @@ PATH
   remote: .
   specs:
     seminardesk_ics (0.1.0)
+      icalendar (~> 2.0)
 
 GEM
   remote: https://rubygems.org/
   specs:
+    icalendar (2.7.0)
+      ice_cube (~> 0.16)
+    ice_cube (0.16.3)
     minitest (5.14.3)
     rake (13.0.3)
 

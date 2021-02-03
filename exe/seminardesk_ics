@@ -1,3 +1,31 @@
 #!/usr/bin/env ruby
 
 require "seminardesk_ics"
+require 'net/http'
+require 'json'
+
+require 'icalendar'
+
+url = 'https://siebenlinden.seminardesk.de/api/eventdates'
+
+uri = URI(url)
+
+response = Net::HTTP.get uri
+
+payload = JSON.parse(response, symbolize_names: true)
+
+dates = payload[:dates]
+
+calendar = Icalendar::Calendar.new
+
+dates.each do |date|
+  event = Icalendar::Event.new
+  event.dtstart = Time.at date[:beginDate]/1000
+  event.dtend   = Time.at date[:endDate]/1000
+  event.summary = date[:title].first[:value]
+  calendar.add_event event
+end
+
+calendar.publish
+
+puts calendar.to_ical
