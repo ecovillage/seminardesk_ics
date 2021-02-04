@@ -1,4 +1,4 @@
-# SeminardeskIcs
+# SeminardeskICS
 
 31 lines of ruby code to create a ics file from Seminardesks event api.
 
@@ -41,3 +41,18 @@ Everyone interacting in the SeminardeskIcs project's codebases, issue trackers, 
 ## License
 
 The code is published under the [AGPLv3+](LICENSE.txt) and Copyright 2021 Felix Wolfsteller.
+
+---
+
+---
+
+## Knowledgebase
+
+While ics files do the job, the [caldav](https://devguide.calconnect.org/Table-of-Contents) protocol allows for more advanced use
+(and e.g. updates of single events, instead of republication of all events),
+including user modifications.
+
+However, full blown caldav implementations in ruby are rare and outdated.
+A quick search only resulted in https://github.com/inferiorhumanorgans/meishi
+and https://github.com/jbox-web/cervicale/tree/master/config and
+https://github.com/schmurfy/dav4rack_ext .
