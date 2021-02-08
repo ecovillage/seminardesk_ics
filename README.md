@@ -56,3 +56,7 @@ However, full blown caldav implementations in ruby are rare and outdated.
 A quick search only resulted in https://github.com/inferiorhumanorgans/meishi
 and https://github.com/jbox-web/cervicale/tree/master/config and
 https://github.com/schmurfy/dav4rack_ext .
+
+Also, the main purpose of this script was to have a POC for integration into
+nextcloud. Still have to figure out how often imported calenders are synced
+there (if the ics adress is given as a URL).

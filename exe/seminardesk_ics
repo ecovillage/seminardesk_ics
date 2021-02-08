@@ -1,31 +1,70 @@
 #!/usr/bin/env ruby
 
 require "seminardesk_ics"
-require 'net/http'
-require 'json'
 
-require 'icalendar'
+require 'optparse'
 
-url = 'https://siebenlinden.seminardesk.de/api/eventdates'
+url,file = nil
 
-uri = URI(url)
+option_parser = OptionParser.new do |opts|
+  opts.banner = <<~USAGE
+    Usage: #{$PROGRAM_NAME} [options]
 
-response = Net::HTTP.get uri
+    Fetch data from seminardesk api and output a RFC 5455 compliant ics file.
 
-payload = JSON.parse(response, symbolize_names: true)
+  USAGE
 
-dates = payload[:dates]
+  opts.on("-u", "--url URL", "Seminardesk API endpoint") do |u|
+    url = u
+  end
 
-calendar = Icalendar::Calendar.new
+  opts.on("-f", "--file FILE", "ICS file to save ('-' for STDOUT)") do |f|
+    file = f
+  end
 
-dates.each do |date|
-  event = Icalendar::Event.new
-  event.dtstart = Time.at date[:beginDate]/1000
-  event.dtend   = Time.at date[:endDate]/1000
-  event.summary = date[:title].first[:value]
-  calendar.add_event event
+  opts.separator "Common options"
+  opts.on("-v", "--[no-]verbose", "Run verbosely") do |v|
+    options[:verbose] = v
+  end
+  opts.on_tail("-h", "--help", "Show this message and exit") do
+    puts opts
+    exit
+  end
+  opts.on_tail("--version", "Show version and exit") do
+    puts SeminardeskICS::VERSION
+    exit
+  end
 end
 
-calendar.publish
+# Process options
+option_parser.parse!
 
-puts calendar.to_ical
+if url && ARGV.length > 0
+  STDERR.puts "Provide either url as option or as argument"
+  puts option_parser
+  exit 1
+end
+
+if (url ||= ARGV.fetch(0, nil)).to_s == ''
+  STDERR.puts "Need to provide url option"
+  puts option_parser
+  exit 1
+end
+
+if file.to_s != ''
+  if File.exist?(file)
+    STDERR.puts "Output file #{file} exists already, aborting."
+    exit 2
+  end
+end
+
+out_stream = (file.to_s != '' && file.to_s != '-') ? File.open(file, 'w') : STDOUT
+
+json = SeminardeskICS::API.fetch_json url
+
+calendar = SeminardeskICS::Converter.to_icalendar json
+
+out_stream << calendar.to_ical
+
+# The exit grace
+exit 0
