@@ -10,19 +10,30 @@ Install the gem:
 
     $ gem install seminardesk_ics
 
-run
+or to include it library-style
 
-    $ seminardesk_ics
+```Gemfile
+# Gemfile
+gem 'seminardesk_ics', '~> 0.1.0'
+```
+
+## Usage
+
+There is a one-of demo script, or you use the `SeminardeskICS::API` and
+`SeminardeskICS::Converter` classes (they are like 10 lines of code :) ).
+
+The script comes with a `--help` switch, though.
+
+Run
+
+    $ seminardesk_ics --help
+    $ seminardesk_ics --url https://myurl --file result.ics
 
 and pray.
 
 Alternatively, check out the github repo, run `bundle` and
 
     $ bundle exec exe/seminardesk_ics
-
-## Usage
-
-This is a one-of demo script. Not usable.
 
 ## Development
 
